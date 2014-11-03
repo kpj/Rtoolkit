@@ -10,42 +10,23 @@ wvs <- getWVSFrame(path)
 #frame.v55 = parseSAVFile(wvs, "V55") # freedom
 #frame.v59 = parseSAVFile(wvs, "V59") # finances
 
-#cor(frame.v23$Sweden, frame.v55$Sweden)
-#cor(frame.v23$Sweden, frame.v59$Sweden)
+countries <- c("Mexico", "Sweden", "South Korea", "United States")
+for(country in countries) {
+  print(paste("Parsing", country))
+  
+  sub <- subset(wvs, V2 == country)
+  frame <- cleanDataFrame(sub)
+  
+  # regression
+  regr <- lm(v23 ~ v55, data = frame) # names(regr)
+  
+  # plot
+  ggplot(frame, aes(x=v23, y=v55)) +
+    geom_point() +
+    geom_smooth(method=lm) +
+    labs(title=country, x="v23", y="v55") +
+    ggsave(file=paste("out_", country, ".png", sep=""))
+}
 
-#cor(frame.v23$Mexico, frame.v55$Mexico)
-#cor(frame.v23$Mexico, frame.v59$Mexico)
-
-sub <- subset(wvs, V2 == "Sweden")
-
-v23 <- sub$V23
-v23 <- as.character(v23)
-v23[v23 == "Completely satisfied"] <- "10"
-v23[v23 == "Completely dissatisfied"] <- "1"
-v23 <- as.integer(v23)
-v23[is.na(v23)] <- 0
-
-v55 <- sub$V55
-v55 <- as.character(v55)
-v55[v55 == "A great deal of choice"] <- "10"
-v55[v55 == "No choice at all"] <- "1"
-v55 <- as.integer(v55)
-v55[is.na(v55)] <- 0
-
-v59 <- sub$V59
-v59 <- as.character(v59)
-v59[v59 == "Completely satisfied"] <- "10"
-v59[v59 == "Completely dissatisfied"] <- "1"
-v59 <- as.integer(v59)
-v59[is.na(v59)] <- 0
-
-frame <- data.frame(v23, v55, v59)
-
-
-ggplot(frame, aes(x=v23, y=v55)) +
-  geom_point() +
-  geom_smooth(method=lm)
-
-
-
-cor.test(frame$v23, frame$v59)
+# correlation
+#cor.test(frame$v23, frame$v59)
