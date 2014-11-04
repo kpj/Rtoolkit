@@ -19,12 +19,18 @@ for(country in countries) {
   
   # regression
   regr <- lm(v23 ~ v55, data = frame) # names(regr)
+  sumy <- summary(regr)
+  
+  rs <- round(sumy$r.squared, digits=4)
+  ars <- round(sumy$adj.r.squared, digits=4)
+  
+  print(paste("> r^2:", rs, ", adj. r^2:", ars))
   
   # plot
   ggplot(frame, aes(x=v23, y=v55)) +
     geom_point() +
     geom_smooth(method=lm) +
-    labs(title=country, x="v23", y="v55") +
+    labs(title=paste(country, ", r^2:", rs, ", adj. r^2:", ars), x="v23", y="v55") +
     ggsave(file=paste("out_", country, ".png", sep=""))
 }
 
