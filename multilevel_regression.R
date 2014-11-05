@@ -1,6 +1,7 @@
 library(multilevel)
 
 source("utils.R")
+source("plotting.R")
 
 
 path <- "WV6_Data_spss_v_2014_06_04.sav" #file.choose()
@@ -27,10 +28,15 @@ for(country in countries) {
   print(paste("> r^2:", rs, ", adj. r^2:", ars))
 
   # plot
-  ggplot(frame, aes(x=factor(v23), y=v55)) +
-    geom_boxplot(aes(fill=factor(v23))) +
-    labs(title=paste(country, ", r^2:", rs, ", adj. r^2:", ars), x="v23", y="v55") +
-    ggsave(file=paste("out_", country, ".png", sep=""))
+  title <- paste(country, ", r^2:", rs, ", adj. r^2:", ars)
+  var1 <- "v23"
+  var2 <- "v55"
+  
+  plot.box <- boxPlot(frame, var1, var2, title)
+  plot.point <- pointPlot(frame, var1, var2, title)
+    
+  ggsave(plot.box, file=paste("out_box_", country, ".png", sep=""))
+  ggsave(plot.point, file=paste("out_point_", country, ".png", sep=""))
 }
 
 # correlation

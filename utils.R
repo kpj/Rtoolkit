@@ -63,21 +63,6 @@ parseSAVFile <- function(wvs, col) {
   return(frame)
 }
 
-plotOverview <- function(frame) {
-  filler <- c() # use uniform colors in plot
-  for(i in 1:length(colnames(frame))) {
-    filler <- append(filler, 1:11, length(filler))
-  }
-  
-  melted <- melt(frame)
-  melted$colors <- filler
-  
-  ggplot(melted, aes(x=variable, y=value)) +
-    geom_bar(aes(fill=as.factor(colors)), stat="Identity") +
-    theme(axis.text.x=element_text(angle=90, hjust=1, vjust=0), panel.background=element_blank()) +
-    labs(title="Distribution", x="Country", y="Percentage")
-}
-
 cleanDataFrame <- function(frame) {
   # cleans v23, v55, v59
   
