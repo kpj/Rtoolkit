@@ -22,7 +22,7 @@ overviewPlot <- function(frame) {
 
 boxPlot <- function(frame, x, y, plot_title) {
   p <- ggplot(frame, aes_string(x=factor(x), y=y)) +
-    geom_boxplot(aes(fill=factor(v23))) +
+    geom_boxplot(aes(fill=factor(v23))) + # attention: v23 used explicitly
     labs(title=plot_title, x=x, y=y)
   
   return(p)
