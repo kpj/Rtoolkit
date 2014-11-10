@@ -63,16 +63,16 @@ parseSAVFile <- function(wvs, col) {
   return(frame)
 }
 
-cleanDataFrame <- function(frame) {
+cleanDataFrame <- function(sub) {
   # cleans v23, v55, v59
-  
+    
   v23 <- sub$V23
   v23 <- as.character(v23)
   v23[v23 == "Completely satisfied"] <- "10"
   v23[v23 == "Completely dissatisfied"] <- "1"
   v23 <- as.integer(v23)
   v23[is.na(v23)] <- 0
-  
+
   v55 <- sub$V55
   v55 <- as.character(v55)
   v55[v55 == "A great deal of choice"] <- "10"
@@ -86,7 +86,7 @@ cleanDataFrame <- function(frame) {
   v59[v59 == "Completely dissatisfied"] <- "1"
   v59 <- as.integer(v59)
   v59[is.na(v59)] <- 0
-  
+    
   # assemble data
   frame <- as.data.frame(v23)
   frame$v55 <- v55
