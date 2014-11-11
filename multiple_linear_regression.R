@@ -1,5 +1,6 @@
 library(multilevel)
 library(QuantPsyc)
+library(car)
 
 source("utils.R")
 source("plotting.R")
