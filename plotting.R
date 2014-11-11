@@ -35,7 +35,7 @@ boxPlot <- function(frame, x, y, plot_title) {
 
 pointPlot <- function(frame, x, y, plot_title) {
   p <- ggplot(frame, aes_string(x=x, y=y)) +
-    geom_point(size=4, alpha=0.25, position=position_jitter(w=0.15, h=0.15)) +
+    geom_point(alpha=0.3, color="firebrick", position=position_jitter(w=0.15, h=0.15)) +
     geom_smooth(method=lm) +
     labs(title=plot_title, x=x, y=y) +
     theme(panel.background=element_blank())
