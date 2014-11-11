@@ -51,9 +51,16 @@ summary(south_korea.regr)
 lm.beta(south_korea.regr)
 
 # visual analysis
-sweden.point.plot <- pointPlot(sweden.frame, "freedom", "life_sat", "Sweden")
-sweden.point.plot <- pointPlot(sweden.frame, "financial", "life_sat", "Sweden")
-south_korea.point.plot <- pointPlot(south_korea.frame, "freedom", "life_sat", "South Korea")
-
-sweden.box.plot <- boxPlot(sweden.frame, "freedom", "life_sat", "Sweden")
-print(sweden.box.plot)
+for(country in countries) {
+  for(y_var in c("freedom", "financial")) {
+    plane_name <- gsub(" ", "_", tolower(country))
+    fr <- get(paste0(plane_name, ".frame"))
+    title <- country
+    
+    point.plot <- pointPlot(fr, y_var, "life_sat", title)
+    box.plot <- boxPlot(fr, y_var, "life_sat", title)
+    
+    ggsave(point.plot, file=paste0("out_point_", country, "_", y_var, ".png"))
+    ggsave(box.plot, file=paste0("out_box_", country, "_", y_var, ".png"))
+  } 
+}
