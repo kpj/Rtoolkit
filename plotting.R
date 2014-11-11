@@ -27,8 +27,8 @@ boxPlot <- function(frame, x, y, plot_title) {
   p <- ggplot(frame, aes(x=groups, y=foo)) +
     geom_boxplot(aes(fill=groups)) + 
     labs(title=plot_title, x=x, y=y) +
-    #scale_x_discrete(limits=c(0, 10)) +
-    scale_y_discrete(breaks=seq(1,10), labels=seq(1,10))
+    scale_y_discrete(breaks=seq(1,10), labels=seq(1,10)) +
+    theme(panel.background=element_blank())
   
   return(p)
 }
@@ -38,6 +38,8 @@ pointPlot <- function(frame, x, y, plot_title) {
     geom_point(alpha=0.3, color="firebrick", position=position_jitter(w=0.15, h=0.15)) +
     geom_smooth(method=lm) +
     labs(title=plot_title, x=x, y=y) +
+    scale_x_discrete(breaks=seq(1,10), labels=seq(1,10)) +
+    scale_y_discrete(breaks=seq(1,10), labels=seq(1,10)) +
     theme(panel.background=element_blank())
     
   return(p)
