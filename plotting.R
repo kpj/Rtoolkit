@@ -21,9 +21,14 @@ overviewPlot <- function(frame) {
 }
 
 boxPlot <- function(frame, x, y, plot_title) {
-  p <- ggplot(frame, aes_string(x=factor(x), y=y)) +
-    geom_boxplot(aes(fill=factor(v23))) + # attention: v23 used explicitly
-    labs(title=plot_title, x=x, y=y)
+  frame$groups <- factor(frame[[x]])
+  frame$foo <- frame[[y]]
+    
+  p <- ggplot(frame, aes(x=groups, y=foo)) +
+    geom_boxplot(aes(fill=groups)) + 
+    labs(title=plot_title, x=x, y=y) +
+    #scale_x_discrete(limits=c(0, 10)) +
+    scale_y_discrete(breaks=seq(1,10), labels=seq(1,10))
   
   return(p)
 }

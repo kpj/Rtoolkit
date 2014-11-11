@@ -1,46 +1,59 @@
 library(multilevel)
+library(QuantPsyc)
 
 source("utils.R")
+source("plotting.R")
 
 
 # parse database
 path <- "WV6_Data_spss_v_2014_06_04.sav" #file.choose()
 wvs <- getWVSFrame(path)
 
-# extract needed information
-sweden.sub <- subset(wvs, V2 == "Sweden")
-sweden.frame <- cleanDataFrame(sweden.sub)
+# predictors are significant
+all.frame <- data.frame()
+count <- 0
+countries <- c("Sweden", "South Korea")
+for(country in countries) {
+  sub <- subset(wvs, V2 == country)
+  
+  frame <- cleanDataFrame(sub)
+  frame$id <- rep.int(count, nrow(frame))
+  colnames(frame) <- c("life_sat", "freedom", "financial", "country")
+  
+  all.frame <- rbind(all.frame, frame)
+  
+  count <- count + 1
+}
 
-south_korea.sub <- subset(wvs, V2 == "South Korea")
-south_korea.frame <- cleanDataFrame(south_korea.sub)
+regr <- lm(life_sat ~ freedom + financial + country, data=all.frame)
+lm.beta(regr)
+avPlots(regr) # should look like random cloud, no structure
 
-# do regressions
-sweden.regr <- lm(v23 ~ v55 + v59, data=sweden.frame)
-south_korea.regr <- lm(v23 ~ v55 + v59, data=south_korea.frame)
+noco.regr <- lm(life_sat ~ freedom + financial, data=all.frame)
+summary(noco.regr)
+lm.beta(noco.regr)
+avPlots(noco.regr)
 
-summary(sweden.regr)$adj.r.squared
-summary(south_korea.regr)$adj.r.squared
+# <0.8 multi-colinearity
+all.frame.cor = all.frame
+all.frame.cor$country = NULL
+cor(all.frame.cor, use="pairwise.complete.obs")
 
-# check for non-multicolinearity
-cor(sweden.frame)
-cor(south_korea.frame)
+# how's the model in each country
+sweden.frame = subset(all.frame, country == 0)
+sweden.regr <- lm(life_sat ~ freedom + financial, data=sweden.frame)
+summary(sweden.regr)
+lm.beta(sweden.regr)
 
-# homogeneity of variance
-with(sweden.frame, leveneTest(v23, interaction(v55, v59)))
-with(south_korea.frame, leveneTest(v23, interaction(v55, v59)))
+south_korea.frame = subset(all.frame, country == 1)
+south_korea.regr <- lm(life_sat ~ freedom + financial, data=south_korea.frame)
+summary(south_korea.regr)
+lm.beta(south_korea.regr)
 
-# independence of cases
-chisq.test(sweden.frame$v23)
-chisq.test(sweden.frame$v55)
-chisq.test(sweden.frame$v59)
-chisq.test(south_korea.frame$v23)
-chisq.test(south_korea.frame$v55)
-chisq.test(south_korea.frame$v59)
+# visual analysis
+sweden.point.plot <- pointPlot(sweden.frame, "freedom", "life_sat", "Sweden")
+sweden.point.plot <- pointPlot(sweden.frame, "financial", "life_sat", "Sweden")
+south_korea.point.plot <- pointPlot(south_korea.frame, "freedom", "life_sat", "South Korea")
 
-# normality
-ks.test(sweden.frame$v23, "pnorm")
-ks.test(sweden.frame$v55, "pnorm")
-ks.test(sweden.frame$v59, "pnorm")
-ks.test(south_korea.frame$v23, "pnorm")
-ks.test(south_korea.frame$v55, "pnorm")
-ks.test(south_korea.frame$v59, "pnorm")
+sweden.box.plot <- boxPlot(sweden.frame, "freedom", "life_sat", "Sweden")
+print(sweden.box.plot)

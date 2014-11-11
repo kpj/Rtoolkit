@@ -71,21 +71,21 @@ cleanDataFrame <- function(sub) {
   v23[v23 == "Completely satisfied"] <- "10"
   v23[v23 == "Completely dissatisfied"] <- "1"
   v23 <- as.integer(v23)
-  v23[is.na(v23)] <- 0
+  #v23[is.na(v23)] <- 0
 
   v55 <- sub$V55
   v55 <- as.character(v55)
   v55[v55 == "A great deal of choice"] <- "10"
   v55[v55 == "No choice at all"] <- "1"
   v55 <- as.integer(v55)
-  v55[is.na(v55)] <- 0
+  #v55[is.na(v55)] <- 0
   
   v59 <- sub$V59
   v59 <- as.character(v59)
   v59[v59 == "Completely satisfied"] <- "10"
   v59[v59 == "Completely dissatisfied"] <- "1"
   v59 <- as.integer(v59)
-  v59[is.na(v59)] <- 0
+  #v59[is.na(v59)] <- 0
     
   # assemble data
   frame <- as.data.frame(v23)
