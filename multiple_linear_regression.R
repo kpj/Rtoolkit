@@ -13,7 +13,7 @@ wvs <- getWVSFrame(path)
 # predictors are significant
 all.frame <- data.frame()
 count <- 0
-countries <- c("Sweden", "South Korea")
+countries <- c("United States", "South Korea")
 for(country in countries) {
   sub <- subset(wvs, V2 == country)
   
@@ -26,25 +26,37 @@ for(country in countries) {
   count <- count + 1
 }
 
-regr <- lm(life_sat ~ freedom + financial + country, data=all.frame)
-lm.beta(regr)
-avPlots(regr) # should look like random cloud, no structure
-
 noco.regr <- lm(life_sat ~ freedom + financial, data=all.frame)
 summary(noco.regr)
 lm.beta(noco.regr)
-avPlots(noco.regr)
+avPlots(noco.regr) # should look like random cloud, no structure
+
+all.frame <- all.frame[complete.cases(all.frame),]
+all.frame$fitted_values = noco.regr$fitted.values
+noco.point.plot <- fittedPointPlot(all.frame, "fitted_values", "life_sat", "Combined Model")
+
 
 # <0.8 multi-colinearity
 all.frame.cor = all.frame
 all.frame.cor$country = NULL
 cor(all.frame.cor, use="pairwise.complete.obs")
 
+cor.prob <- function(X, dfr = nrow(X) - 2) {
+  R <- cor(X)
+  above <- row(R) < col(R)
+  r2 <- R[above]^2
+  Fstat <- r2 * dfr / (1 - r2)
+  R[above] <- 1 - pf(Fstat, 1, dfr)
+  R
+}
+
+cor.prob(cor(all.frame.cor, use="pairwise.complete.obs"))
+
 # how's the model in each country
-sweden.frame = subset(all.frame, country == 0)
-sweden.regr <- lm(life_sat ~ freedom + financial, data=sweden.frame)
-summary(sweden.regr)
-lm.beta(sweden.regr)
+united_states.frame = subset(all.frame, country == 0)
+united_states.regr <- lm(life_sat ~ freedom + financial, data=united_states.frame)
+summary(united_states.regr)
+lm.beta(united_states.regr)
 
 south_korea.frame = subset(all.frame, country == 1)
 south_korea.regr <- lm(life_sat ~ freedom + financial, data=south_korea.frame)
