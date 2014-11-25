@@ -26,14 +26,14 @@ for(country in countries) {
   count <- count + 1
 }
 
-noco.regr <- lm(life_sat ~ freedom + financial, data=all.frame)
-summary(noco.regr)
-lm.beta(noco.regr)
-avPlots(noco.regr) # should look like random cloud, no structure
+regr <- lm(life_sat ~ freedom + financial, data=all.frame)
+summary(regr)
+lm.beta(regr)
+avPlots(regr) # should look like random cloud, no structure
 
 all.frame <- all.frame[complete.cases(all.frame),]
-all.frame$fitted_values = noco.regr$fitted.values
-noco.point.plot <- fittedPointPlot(all.frame, "fitted_values", "life_sat", "Combined Model")
+all.frame$fitted_values = regr$fitted.values
+point.plot <- fittedPointPlot(all.frame, "fitted_values", "life_sat", "Combined Model")
 
 
 # <0.8 multi-colinearity
@@ -41,7 +41,7 @@ all.frame.cor = all.frame
 all.frame.cor$country = NULL
 cor(all.frame.cor, use="pairwise.complete.obs")
 
-cor.prob <- function(X, dfr = nrow(X) - 2) {
+cor.prob <- function(X, dfr=nrow(X)-2) {
   R <- cor(X)
   above <- row(R) < col(R)
   r2 <- R[above]^2
